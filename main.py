@@ -22,6 +22,21 @@ intents.message_content = True
 # สร้างคลาส bot
 client = commands.Bot(command_prefix="!", intents=intents)
 
+# สร้างคลาสสำหรับปุ่ม
+class MyView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+
+    # ปุ่ม "ใส่โทเค่น"
+    @discord.ui.button(label="ใส่โทเค่น", style=discord.ButtonStyle.green)
+    async def token_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.send_message("กรุณาใส่โทเค่นที่ต้องการใช้งาน", ephemeral=True)
+
+    # ปุ่ม "เริ่ม"
+    @discord.ui.button(label="เริ่ม", style=discord.ButtonStyle.blue)
+    async def start_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.send_message("เริ่มทำงานแล้ว!", ephemeral=True)
+        
 @client.event
 async def on_ready():
     print(f"{client.user} is online!")
@@ -55,22 +70,10 @@ async def on_ready():
     # ตั้งค่าภาพใหญ่และเล็ก
     await client.change_presence(activity=r)
 
-    # เพิ่มปุ่ม (จำกัดได้ 2 ปุ่ม)
-    # Discord ไม่รองรับการเพิ่มปุ่มแบบ JS แต่สามารถใส่ลิ้งค์ใน Rich Presence ได้
-    # ปุ่ม Discord
-    # ปุ่มใน Python API ไม่รองรับ แต่สามารถเพิ่มปุ่มเพิ่มเติมผ่านการแสดงสถานะอื่นๆ
-    # กรณีนี้เราจะใช้การแสดงผลใน Rich Presence แทนการเพิ่มปุ่มจริงๆ
-
-    # ปุ่มที่ 1: เปิดร้าน
-    activity = discord.Activity(
-        type=discord.ActivityType.streaming,
-        name="Meoaw Hub",
-        details="เปิดร้าน",
-        state="คลิกเพื่อเริ่ม!",
-        start=datetime.datetime.utcnow(),
-        url="https://www.youtube.com/watch?v=g88A3mmF3A0"
-    )
-    await client.change_presence(activity=activity)
+    # ส่งข้อความพร้อมปุ่ม
+    channel = client.get_channel(1297932056562761869)  # เปลี่ยนเป็น ID ของช่องที่ต้องการให้บอทส่งข้อความไป
+    view = MyView()
+    await channel.send("คลิกปุ่มเพื่อเริ่มหรือใส่โทเค่น", view=view)
 
     server_on()
 
