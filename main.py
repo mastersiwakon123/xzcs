@@ -1,10 +1,20 @@
 import discord
 from discord.ext import commands
 import datetime
-import os 
+import os
 from myserver import server_on
-# Token ของคุณ
+from dotenv import load_dotenv
 
+# โหลดข้อมูลจากไฟล์ .env
+load_dotenv()
+
+# รับค่า Token จาก environment variable
+TOKEN = os.getenv('TOKEN')
+
+# ตรวจสอบว่า TOKEN มีค่าไหม
+if not TOKEN:
+    print("Token not found! Please make sure to set the TOKEN environment variable.")
+    exit()
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -25,7 +35,7 @@ async def on_ready():
         state="สถานะ: :zaved: เปิดร้าน !",  # เปลี่ยนได้
         start=datetime.datetime.utcnow(),
     )
-    
+
     await client.change_presence(activity=activity)
 
     # Rich Presence Assets (รูปภาพใหญ่และเล็ก)
@@ -41,7 +51,7 @@ async def on_ready():
         start=datetime.datetime.utcnow(),
         url="https://www.youtube.com/watch?v=g88A3mmF3A0",
     )
-    
+
     # ตั้งค่าภาพใหญ่และเล็ก
     await client.change_presence(activity=r)
 
@@ -51,8 +61,18 @@ async def on_ready():
     # ปุ่มใน Python API ไม่รองรับ แต่สามารถเพิ่มปุ่มเพิ่มเติมผ่านการแสดงสถานะอื่นๆ
     # กรณีนี้เราจะใช้การแสดงผลใน Rich Presence แทนการเพิ่มปุ่มจริงๆ
 
+    # ปุ่มที่ 1: เปิดร้าน
+    activity = discord.Activity(
+        type=discord.ActivityType.streaming,
+        name="Meoaw Hub",
+        details="เปิดร้าน",
+        state="คลิกเพื่อเริ่ม!",
+        start=datetime.datetime.utcnow(),
+        url="https://www.youtube.com/watch?v=g88A3mmF3A0"
+    )
+    await client.change_presence(activity=activity)
 
-server_on()
+    server_on()
 
-
-client.run(os.getenv('TOKEN'))  # ห้ามเปลี่ยน
+# เริ่มบอทด้วย Token ที่ได้จาก .env
+client.run(TOKEN)
