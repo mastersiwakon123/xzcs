@@ -1,4 +1,5 @@
 flask==2.2.2
+werkzeug==2.2.3  # เพิ่มเวอร์ชันนี้
 discord.py==2.4.0
 aiohappyeyeballs==2.4.4
 aiohttp==3.11.12
